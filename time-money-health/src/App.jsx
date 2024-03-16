@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import './styles/App.css'
 
 function App() {
   const [time, setTime] = useState(false)
@@ -42,28 +43,34 @@ function App() {
 
   const showMessage = () => {
     return time && money ?
-    'This is Oldage stage where person has time and money but not health' :
+    'In old age, we may have time and money, but health often falters' :
     money && health ?
-    'This is Midage stage where person has time and money but not time' :
-    time && health ? 'This is childhood stage where person has time and health but not money' : ''
+    "As adults, we've got health and money, but time feels scarce" :
+    time && health ? "When we're young, we've got time and energy, but not much money" : ''
   }
+
+  const message = showMessage()
   return (
     <>
-      <div>
-        <input type='checkbox' value={"time"} checked={time} onChange={ e => onChangeTime(e)}/>
-        <span>Time</span>
+      <div className='container'>
+      <div className='content-wrapper'>
+        <div>
+          <input type='checkbox' id='time' value={"time"} checked={time} onChange={ e => onChangeTime(e)}/>
+          <label htmlFor='time'>Time</label>
+        </div>
+        <div>
+          <input type='checkbox' id='money' value={"money"} checked={money} onChange={e => onChangeMoney(e)}/>
+          <label htmlFor='money'>Money</label>
+        </div>
+        <div>
+          <input type='checkbox' id='health' value={"health"} checked={health} onChange={e => onChangeHealth(e)}/>
+          <label htmlFor='health'>Health</label>
+        </div>
       </div>
-      <div>
-        <input type='checkbox' value={"money"} checked={money} onChange={e => onChangeMoney(e)}/>
-        <span>Money</span>
-      </div>
-      <div>
-        <input type='checkbox' value={"health"} checked={health} onChange={e => onChangeHealth(e)}/>
-        <span>Health</span>
-      </div>
-      <div>
-        <p>{showMessage()}</p>
-      </div>
+    </div>
+    <div className='message'>
+      <p>{message}</p>
+    </div>
     </>
   )
 }
