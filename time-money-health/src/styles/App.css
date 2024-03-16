@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Edu+SA+Beginner&family=Kaushan+Script&family=Metal&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Carattere&family=Grand+Hotel&family=Ruthie&display=swap');
+
 * {
     padding: 0;
     margin: 0;
@@ -8,9 +11,8 @@
 .container {
     display: flex;
     width: 100vw;
-    height: 90vh;
     justify-content: center;
-    align-items: center;
+    margin-top: 25vh;
 }
 
 .container div :hover{
@@ -22,10 +24,8 @@
 }
 
 .message {
-    position: absolute;
-    top: 70%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    width: fit-content;
+    margin: 2rem auto;
 }
 
 .container div input[type="checkbox"] {
@@ -56,4 +56,15 @@
 
 .container div input[type="checkbox"]:checked::after {
     left: 70%;
+}
+
+.quote {
+    /* font-family: "Metal", serif; */
+    font-family: "Carattere", serif;
+    font-style: normal;
+}
+
+.message .description {
+    font-size: 0.8rem;
+    margin-top: 0.4rem;
 }
