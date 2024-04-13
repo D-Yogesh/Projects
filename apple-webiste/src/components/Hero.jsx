@@ -8,7 +8,6 @@ const Hero = () => {
     const [videoSrc, setVideoSrc] = useState(window.innerWidth < 760 ? smallHeroVideo : heroVideo)
 
     const handleWindowResize = () => {
-        console.log(window.innerWidth < 760);
         setVideoSrc(window.innerWidth < 760 ? smallHeroVideo : heroVideo)
     }
 
@@ -23,7 +22,6 @@ const Hero = () => {
         gsap.to('.hero-title', {opacity: 1, delay: 1.5})
         gsap.to('#cta', {opacity: 1, y: -50, delay: 2.5})
     }, [])
-    console.log(videoSrc)
     return (
         <section className="w-full nav-height relative">
             <div className="h-5/6 w-full flex-center flex-col">
