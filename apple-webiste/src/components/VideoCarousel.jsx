@@ -83,7 +83,9 @@ const VideoCarousel = () => {
             }
         })
         const animUpdate = () => {
-            spanAnimation.progress(videoRef.current[video.videoId].currentTime / hightlightsSlides[video.videoId].videoDuration)
+            if(videoRef){
+                spanAnimation.progress(videoRef.current[video.videoId].currentTime / hightlightsSlides[video.videoId].videoDuration)
+            }
         }
         if(video.isPlaying){
             gsap.ticker.add(animUpdate)
@@ -127,7 +129,6 @@ const VideoCarousel = () => {
                                 index !== 3 ? handleProcess('end', index) : handleProcess('last', index)
                             }}
                             onPlay={() => {
-                                console.log('VIdeo is playing')
                                 setVideo((prevVideo) => ({...prevVideo, isPlaying: true}))
                             }}
                             onLoadedMetadata={e => setLoadedMetaData(prev =>[...prev, e])}
