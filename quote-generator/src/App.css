@@ -1,0 +1,64 @@
+.container {
+    height: 100vh;
+    background: url('quote-generator-background.jpg');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-content: space-around;
+    padding: 1rem;
+}
+
+.card {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 25px 45px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+button {
+    width: fit-content;
+    height: 50px;
+    padding: 1rem;
+    border-radius: 4rem;
+    font-size: medium;
+    margin-top: 1rem;
+    cursor: pointer;
+    background-color: white;
+    outline: none;
+    display: flex;
+    align-items: center;
+}
+
+button:hover {
+    color: #2c3d47;
+    animation: rotate 0.7s ease-in-out both;
+    border: 2px solid rgba(22, 76, 167, 0.6);
+}
+
+button:active {
+    border: 2px solid rgb(183, 181, 181);
+    opacity: 0.8;
+}
+
+@keyframes rotate {
+    0% {
+      transform: rotate(0deg) translate3d(0, 0, 0);
+    }
+    25% {
+      transform: rotate(3deg) translate3d(0, 0, 0);
+    }
+    50% {
+      transform: rotate(-3deg) translate3d(0, 0, 0);
+    }
+    75% {
+      transform: rotate(1deg) translate3d(0, 0, 0);
+    }
+    100% {
+      transform: rotate(0deg) translate3d(0, 0, 0);
+    }
+  }
