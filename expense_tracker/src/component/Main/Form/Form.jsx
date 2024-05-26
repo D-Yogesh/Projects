@@ -4,12 +4,14 @@ import useStyles from './styles'
 import { useContext, useState } from "react"
 import { ExpenseTrackerContext } from "../../../context/context"
 import {v4 as uuid} from 'uuid'
+import { expenseCategories, incomeCategories } from "../../../constants/categories"
+import formatDate from "../../../utils/formatDate"
 
 const initialState = {
     type: 'income',
     category: '',
     amount:'',
-    date: new Date()
+    date: formatDate(new Date())
 }
 
 const Form = () => {
@@ -26,6 +28,8 @@ const Form = () => {
         addTransaction(transaction)
         setFormData(initialState)
     }
+
+    const selectedCategories = formData.type === 'income' ? incomeCategories : expenseCategories;
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -48,12 +52,13 @@ const Form = () => {
                 <FormControl fullWidth>
                     <InputLabel>Category</InputLabel>
                     <Select value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})}>
-                        <MenuItem value="business">
-                            Business
-                        </MenuItem>
-                        <MenuItem value="Salary">
-                            Salary
-                        </MenuItem>
+                        {
+                            selectedCategories.map(c => (
+                                <MenuItem key={c.type} value={c.type}>
+                                    {c.type}
+                                </MenuItem>
+                            ))
+                        }
                     </Select>
                 </FormControl>
             </Grid>
@@ -64,7 +69,7 @@ const Form = () => {
             </Grid>
             <Grid item xs={6}>
                 <FormControl fullWidth>
-                    <TextField label="Date" type="date" fullWidth value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})}/>
+                    <TextField label="Date" type="date" fullWidth value={formData.date} onChange={e => setFormData({...formData, date: formatDate(e.target.value)})}/>
                 </FormControl>
             </Grid>
             <Button className={classes.button} variant="outlined" color="primary" fullWidth onClick={createTransaction}>Create</Button>
