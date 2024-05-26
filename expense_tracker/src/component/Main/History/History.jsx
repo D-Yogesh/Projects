@@ -2,26 +2,26 @@ import { Avatar, IconButton, List, ListItem, ListItemAvatar, ListItemSecondaryAc
 import {Delete, MoneyOff} from '@material-ui/icons'
 
 import useStyles from './styles'
+import { useContext } from "react";
+import { ExpenseTrackerContext } from "../../../context/context";
 
 const History = () => {
     const classes = useStyles()
-    const transactions = [
-        {id: 1, type: 'Income', category: 'Salary', amount: 50, date: '23 May 2024'},
-        {id: 2, type: 'Expense', category: 'Pets', amount: 50, date: '24 May 2024'},
-        {id: 3, type: 'Income', category: 'Business', amount: 150, date: '25 May 2024'}
-    ]
+    const {deleteTransaction, transactions} = useContext(ExpenseTrackerContext)
+    console.log(deleteTransaction, transactions)
+
     return (
         <List className={classes.list}>
             {transactions.map(transaction => (
                 <ListItem key={transaction.id}>
                     <ListItemAvatar>
-                        <Avatar className={transaction.type === 'Income' ? classes.avatarIncome : classes.avatarExpense}>
+                        <Avatar className={transaction.type === 'income' ? classes.avatarIncome : classes.avatarExpense}>
                             <MoneyOff/>
                         </Avatar>
                     </ListItemAvatar>
                     <ListItemText primary={transaction.category} secondary={`$${transaction.amount} - ${transaction.date}`}/>
                     <ListItemSecondaryAction>
-                        <IconButton>
+                        <IconButton onClick={() => deleteTransaction(transaction.id)}>
                             <Delete/>
                         </IconButton>
                     </ListItemSecondaryAction>

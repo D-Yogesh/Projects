@@ -2,5 +2,6 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './App.jsx'
 import './index.css'
+import Provider from './context/context.jsx'
 
-ReactDOM.render(<App />, document.getElementById('root'))
+ReactDOM.render(<Provider><App /></Provider>, document.getElementById('root'))
