@@ -8,7 +8,7 @@ const Main = () => {
     const classes = useStyles()
     return (
         <div>
-            <Card className={classes.roo}>
+            <Card className={classes.root}>
                 <CardHeader title={"Expense Tracker"} subheader="Powered by speechly"/>
                 <CardContent>
                     <Typography align="center" variant="h5">
