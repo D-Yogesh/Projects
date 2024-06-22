@@ -1,0 +1,1 @@
+console.log('Intial setup of project');
