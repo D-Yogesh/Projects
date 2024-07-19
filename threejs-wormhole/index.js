@@ -25,10 +25,10 @@ controls.enableDamping = true;
 controls.dampingFactor = 0.03
 
 const scene = new THREE.Scene()
-scene.fog = new THREE.FogExp2(0x000000, 0.3)
+scene.fog = new THREE.FogExp2(0x000000, 0.4)
 
 const renderScene = new RenderPass(scene, camera);
-const bloomPass = new UnrealBloomPass(new THREE.Vector2(width, height), 3.5, 0, 0.009);
+const bloomPass = new UnrealBloomPass(new THREE.Vector2(width, height), 3.5, 1, 0.009);
 console.log(bloomPass)
 const composer = new EffectComposer(renderer)
 composer.addPass(renderScene)
@@ -47,17 +47,17 @@ composer.addPass(bloomPass)
 // const lineMesh = new THREE.Line(lineGeometry, lineMaterial)
 // scene.add(lineMesh);
 
-const tubeGeometry = new THREE.TubeGeometry(spline, 100, 1, 20, true);
-const tubeMaterial = new THREE.MeshBasicMaterial({
-  color: 0xffffff,
-  wireframe: true,
-  side: THREE.DoubleSide
-})
-const tube = new THREE.Mesh(tubeGeometry, tubeMaterial);
+const tubeGeometry = new THREE.TubeGeometry(spline, 222, 1, 16, true);
+// const tubeMaterial = new THREE.MeshBasicMaterial({
+//   color: 0xffffff,
+//   wireframe: true,
+//   side: THREE.DoubleSide
+// })
+// const tube = new THREE.Mesh(tubeGeometry, tubeMaterial);
 // scene.add(tube);
 
 const edgesGeometry = new THREE.EdgesGeometry(tubeGeometry, 0.5);
-const edgesMaterial = new THREE.LineBasicMaterial({ color: 0x639fff });
+const edgesMaterial = new THREE.LineBasicMaterial({ color: 0x9ddef2 });
 const tubeLinesMesh = new THREE.LineSegments(edgesGeometry, edgesMaterial);
 scene.add(tubeLinesMesh);
 
@@ -98,7 +98,7 @@ function animate(){
   const lookAt = tubeGeometry.parameters.path.getPointAt((tubePoint + 0.03) % 1)
   camera.position.copy(p)
   camera.lookAt(lookAt)
-  tubePoint += 0.0003;
+  tubePoint += 0.0002;
   tubePoint %= 1;
   composer.render(scene, camera);
 }
