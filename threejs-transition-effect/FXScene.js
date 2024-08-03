@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-const objectCount = 8000;
+const objectCount = 5000;
 function getMeshProps() {
     const arr = [];
     for(let i = 0; i < objectCount; i++) {
@@ -27,6 +27,8 @@ function getMesh(material, needsAnimatedColor = false) {
     const geometry = new THREE.IcosahedronGeometry(size, 1);
     const mesh = new THREE.InstancedMesh(geometry, material, objectCount);
 
+    const color = new THREE.Color()
+
     const dummy = new THREE.Object3D();
     for(let i = 0; i < objectCount; i++) {
         const props = objectsProps[i];
@@ -47,23 +49,52 @@ function getMesh(material, needsAnimatedColor = false) {
     return mesh;
 }
 
-export function getFXScene(camera, renderer, material) {
-    // const width = window.innerWidth;
-    // const height = window.innerHeight;
+export function getFXScene(renderer, material, clearColor, needsAnimatedColor = false) {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const fov = 50;
+    const aspect = width / height;
+    const near = 1;
+    const far = 10000;
+    const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+    camera.position.z = 2000
     // const camera = new THREE.PerspectiveCamera(75, width / height, 1, 1000);
     // camera.position.z = 100;
 
     const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(clearColor, 0.0002)
 
     const hemilight = new THREE.HemisphereLight(0xffffff, 0x555555, 1);
     scene.add(hemilight);
 
-    const mesh = getMesh(material);
+    const mesh = getMesh(material, true);
     scene.add(mesh)
-    renderer.setAnimationLoop(() => {
-        mesh.rotation.x += 0.01;
-        mesh.rotation.y += 0.01;
-        // mesh.rotation.z += 0.01;
-        renderer.render(scene, camera)
-    })
+
+    const rotationSpeed = new THREE.Vector3(0.1, -0.2, 0.15)
+    const update = (delta) => {
+        mesh.rotation.x += delta * rotationSpeed.x;
+        mesh.rotation.y += delta *  rotationSpeed.y;
+        mesh.rotation.z += delta * rotationSpeed.z;
+        if (needsAnimatedColor) {
+            material.color.setHSL(0.1 + 0.5 * Math.sin(0.0002 * Date.now()), 1, 0.5);
+          }
+    }
+    
+    const fbo = new THREE.WebGLRenderTarget(width, height)
+    const render = (delta, rtt) => {
+        update(delta);
+
+        renderer.setClearColor(clearColor)
+
+        if(rtt){
+            renderer.setRenderTarget(fbo);
+            renderer.clear();
+            renderer.render(scene, camera);
+        }
+        else {
+            renderer.setRenderTarget(null);
+            renderer.render(scene, camera)
+        }
+    }
+    return {fbo, render, update};
 }
