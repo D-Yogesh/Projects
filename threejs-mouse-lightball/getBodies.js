@@ -3,7 +3,7 @@ import * as THREE from 'three'
 const sceneMiddle = new THREE.Vector3(0, 0,0);
 
 export function getBody(RAPIER, world) {
-    const size = 0.2 + Math.random() * 0.5;
+    const size = 0.2 + Math.random() * 0.25;
     const range = 6;
 
     const x = Math.random() * range - range * 0.5 ;
@@ -19,11 +19,18 @@ export function getBody(RAPIER, world) {
 
     const geometry = new THREE.IcosahedronGeometry(size, 1);
     const material = new THREE.MeshStandardMaterial({
-        color: 0x00ff00,
+        color: 0xffffff,
         flatShading: true
     });
 
     const mesh = new THREE.Mesh(geometry, material);
+    const wireMat = new THREE.MeshBasicMaterial({
+        color: 0x990000,
+        wireframe: true
+      });
+    const wireMesh = new THREE.Mesh(geometry, wireMat);
+    wireMesh.scale.setScalar(1.001);
+    mesh.add(wireMesh);
 
     function update() {
         rigid.resetForces(true);
@@ -37,14 +44,14 @@ export function getBody(RAPIER, world) {
 }
 
 export function getMouseBall(RAPIER, world) {
-    const mouseBallSize = 0.5;
+    const mouseBallSize = 0.3;
     const geometry = new THREE.IcosahedronGeometry(mouseBallSize, 8);
     const material = new THREE.MeshStandardMaterial({
         emissive: 0xffffff
     });
     const mouseMesh = new THREE.Mesh(geometry, material);
     
-    const mouseLight = new THREE.PointLight(0xffffff, 2);
+    const mouseLight = new THREE.PointLight(0xffffff, 0.5);
 
     mouseMesh.add(mouseLight);
 
