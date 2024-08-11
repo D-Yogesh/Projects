@@ -22,7 +22,7 @@ const pictures = [
 export const pageAtom = atom(0);
 export const pages = [
   {
-    front: "book-cover",
+    front: "book-back",
     back: pictures[0],
   },
 ];
