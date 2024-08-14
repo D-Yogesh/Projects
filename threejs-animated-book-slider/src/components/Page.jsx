@@ -4,12 +4,17 @@ import {useTexture} from '@react-three/drei'
 import { pages } from './UI';
 import { useFrame } from '@react-three/fiber';
 import { degToRad } from 'three/src/math/MathUtils.js';
+import { easing } from 'maath';
 
 const LERP_FACTOR = 0.001;
+const EASING_FACTOR = 0.5;
+const INSIDE_CURVE_STRENGTH = 0.18;
+const OUTSIDE_CURVE_STRENGTH = 0.05;
+const TURNING_CURVE_STRENGTH = 0.09;
 
 const PAGE_WIDTH =  1.28;
 const PAGE_HEIGHT = 1.71;
-const PAGE_DEPTH = 0.001;
+const PAGE_DEPTH = 0.002;
 const PAGE_SEGMENTS = 30;
 const SEGMENT_WIDTH = PAGE_WIDTH / PAGE_SEGMENTS;
 
@@ -57,7 +62,7 @@ pages.forEach(page => {
     useTexture.preload(`/textures/book-back.jpg`)
 })
 
-const Page = ({number, front, back, page, opened, ...props}) => {
+const Page = ({number, front, back, page, opened, bookClosed, ...props}) => {
     const [picture, picture2, pictureRoughness] = useTexture([`/textures/${front}.jpg`,
         `/textures/${back}.jpg`,
         ...(number === 0 || number === pages.length - 1 ?
@@ -122,22 +127,36 @@ const Page = ({number, front, back, page, opened, ...props}) => {
     const group = useRef()
     const skinnedMeshRef = useRef()
 
-    useFrame(() => {
+    useFrame((_, delta) => {
         if(!skinnedMeshRef.current) {
             return;
         }
         const bones = skinnedMeshRef.current.skeleton.bones;
 
         let targetRotation = opened ? -Math.PI / 2 : Math.PI / 2;
-        targetRotation += degToRad(number * 0.8);
+        
+        if(!bookClosed){
+            targetRotation += degToRad(number * 0.8);
+        }
 
         for(let i = 0 ; i < bones.length; i++) {
             const target = i === 0 ? group.current : bones[i];
 
-            const insideCurveIntensity = i < 8 ? Math.sin(i * 0.2 + 0.25) : 0;
-            // let rotationAngle = INSIDE_CURVE_STRENGTH * insideCurveIntensity * targetRotation;
+            const insideCurveIntensity = i < 8 ? Math.sin(i * 0.2 + 0.3) : 0;
+            const outsideCurveIntensity = i >= 8 ? Math.cos(i * 0.3 + 0.09) : 0;
+            let rotationAngle = INSIDE_CURVE_STRENGTH * insideCurveIntensity * targetRotation - outsideCurveIntensity * OUTSIDE_CURVE_STRENGTH * targetRotation;
 
-            bones[0].rotation.y = MathUtils.lerp(bones[0].rotation.y, targetRotation, LERP_FACTOR)
+            if(bookClosed) {
+                rotationAngle = i === 0 ? targetRotation : 0
+            }
+            
+            easing.dampAngle(
+                target.rotation,
+                'y',
+                rotationAngle,
+                EASING_FACTOR,
+                delta
+            )
         }
     })
 
