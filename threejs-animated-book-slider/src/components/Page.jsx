@@ -165,6 +165,7 @@ const Page = ({number, front, back, page, opened, bookClosed, ...props}) => {
 
             if(bookClosed) {
                 rotationAngle = i === 0 ? targetRotation : 0
+                foldRotationAngle = 0;
             }
             
             easing.dampAngle(
@@ -172,6 +173,16 @@ const Page = ({number, front, back, page, opened, bookClosed, ...props}) => {
                 'y',
                 rotationAngle,
                 EASING_FACTOR,
+                delta
+            )
+
+            const foldIntensity = i > 8 ? Math.sin(i * Math.PI * (1 / bones.length) - 0.5) * turningTime : 0;
+
+            easing.dampAngle(
+                target.rotation,
+                'x',
+                foldRotationAngle * foldIntensity,
+                EASING_FACTOR_FOLD,
                 delta
             )
         }
