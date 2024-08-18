@@ -8,6 +8,7 @@ import { easing } from 'maath';
 
 const LERP_FACTOR = 0.001;
 const EASING_FACTOR = 0.5;
+const EASING_FACTOR_FOLD = 0.3;
 const INSIDE_CURVE_STRENGTH = 0.18;
 const OUTSIDE_CURVE_STRENGTH = 0.05;
 const TURNING_CURVE_STRENGTH = 0.09;
@@ -126,11 +127,22 @@ const Page = ({number, front, back, page, opened, bookClosed, ...props}) => {
 
     const group = useRef()
     const skinnedMeshRef = useRef()
+    const lastOpened = useRef(opened)
+    const turnedAt = useRef(0)
 
     useFrame((_, delta) => {
         if(!skinnedMeshRef.current) {
             return;
         }
+
+        if(lastOpened.current !== opened) {
+            turnedAt.current = +new Date();
+            lastOpened.current = opened;
+        }
+    
+        let turningTime = Math.min(400, ( new Date() - turnedAt.current)) / 400;
+        turningTime = Math.sin(turningTime * Math.PI)
+
         const bones = skinnedMeshRef.current.skeleton.bones;
 
         let targetRotation = opened ? -Math.PI / 2 : Math.PI / 2;
@@ -144,7 +156,12 @@ const Page = ({number, front, back, page, opened, bookClosed, ...props}) => {
 
             const insideCurveIntensity = i < 8 ? Math.sin(i * 0.2 + 0.3) : 0;
             const outsideCurveIntensity = i >= 8 ? Math.cos(i * 0.3 + 0.09) : 0;
-            let rotationAngle = INSIDE_CURVE_STRENGTH * insideCurveIntensity * targetRotation - outsideCurveIntensity * OUTSIDE_CURVE_STRENGTH * targetRotation;
+            const turningCurveIntensity = Math.sin(i * Math.PI * (1 / bones.length)) * turningTime ;
+
+            let rotationAngle = INSIDE_CURVE_STRENGTH * insideCurveIntensity * targetRotation - outsideCurveIntensity * OUTSIDE_CURVE_STRENGTH * targetRotation 
+            + TURNING_CURVE_STRENGTH * turningCurveIntensity * targetRotation;
+
+            let foldRotationAngle = degToRad(Math.sign(targetRotation) * 2);
 
             if(bookClosed) {
                 rotationAngle = i === 0 ? targetRotation : 0
