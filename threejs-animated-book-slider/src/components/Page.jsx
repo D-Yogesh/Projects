@@ -1,10 +1,11 @@
-import { useMemo, useRef } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import {Bone, BoxGeometry, Color, Float32BufferAttribute, MathUtils, MeshStandardMaterial, Skeleton, SkinnedMesh, SRGBColorSpace, Uint16BufferAttribute, Vector3} from 'three'
-import {useTexture} from '@react-three/drei'
-import { pages } from './UI';
+import {useCursor, useTexture} from '@react-three/drei'
+import { pageAtom, pages } from './UI';
 import { useFrame } from '@react-three/fiber';
 import { degToRad } from 'three/src/math/MathUtils.js';
 import { easing } from 'maath';
+import { useAtom } from 'jotai';
 
 const LERP_FACTOR = 0.001;
 const EASING_FACTOR = 0.5;
@@ -188,8 +189,25 @@ const Page = ({number, front, back, page, opened, bookClosed, ...props}) => {
         }
     })
 
+    const [highlight, setHighlight] = useState(false)
+    useCursor(highlight)
+    const [p, setPage] = useAtom(pageAtom);
+
     return (
-        <group ref={group} {...props}>
+        <group ref={group} {...props}
+            onPointerEnter={e => {
+                e.stopPropagation();
+                setHighlight(true)
+            }}
+            onPointerLeave={e => {
+                e.stopPropagation();
+                setHighlight(false)
+            }}
+            onClick={e => {
+                e.stopPropagation();
+                setPage(opened ? number : number + 1)
+            }}
+        >
             <primitive object={manualSkinnedMesh} ref={skinnedMeshRef} 
             position-z={-number * PAGE_DEPTH + page * PAGE_DEPTH}/>
         </group>
