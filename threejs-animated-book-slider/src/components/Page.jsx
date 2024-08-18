@@ -65,10 +65,10 @@ pages.forEach(page => {
 })
 
 const Page = ({number, front, back, page, opened, bookClosed, ...props}) => {
-    const [picture, picture2, pictureRoughness] = useTexture([`/textures/${front}.jpg`,
-        `/textures/${back}.jpg`,
+    const [picture, picture2, pictureRoughness] = useTexture([`./textures/${front}.jpg`,
+        `./textures/${back}.jpg`,
         ...(number === 0 || number === pages.length - 1 ?
-            [`/textures/book-back.jpg`]
+            [`./textures/book-back.jpg`]
             : []
         ) 
     ])
