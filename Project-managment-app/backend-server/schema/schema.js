@@ -1,6 +1,9 @@
 const {clients, projects} = require('../sampleData');
 const {GraphQLObjectType, GraphQLID, GraphQLString, GraphQLInputObjectType, GraphQLSchema, GraphQLList} = require('graphql');
 
+const Project = require('../models/Project');
+const Client = require('../models/Client');
+
 //types
 const ClientType = new GraphQLObjectType({
     name: 'Client',
@@ -22,7 +25,7 @@ const ProjectType = new GraphQLObjectType({
         client: {
             type: ClientType,
             resolve(parent, args) {
-                return clients.find(client => client.id === parent.clientId)
+                return Client.findById(parent.clientId);
             }
         }
     })
@@ -34,27 +37,27 @@ const RootQuery = new GraphQLObjectType({
         clients: {
             type: GraphQLList(ClientType),
             resolve(parent, args) {
-                return clients;
+                return Client.find();
             }
         },
         client: {
             type: ClientType,
             args: {id: {type: GraphQLID}},
             resolve(parent, args) {
-                return clients.find(client => client.id === args.id);
+                return Client.findById(args.id);
             }
         },
         projects: {
             type: GraphQLList(ProjectType),
-            resolve(parenyout, args) {
-                return projects;
+            resolve(parent, args) {
+                return Project.find();
             }
         },
         project: {
             type: ProjectType,
             args: {id: {type: GraphQLID}},
             resolve(parent, args) {
-                return projects.find(project => project.id === args.id);
+                return Project.findById(args.id);
             }
         }
     }
