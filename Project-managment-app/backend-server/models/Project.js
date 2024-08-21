@@ -16,3 +16,5 @@ const ProjectSchema = mongoose.Schema({
         ref: 'Client'
     }
 })
+
+module.exports = new mongoose.model('Project', ProjectSchema);
