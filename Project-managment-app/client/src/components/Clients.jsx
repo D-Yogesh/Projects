@@ -1,11 +1,12 @@
 import { useQuery } from "@apollo/client";
 import {FaTrash} from 'react-icons/fa';
 import { GET_CLIENTS } from "../queries/clientQueries";
+import Spinner from "./Spinner";
 
 export default function Clients () {
     const {loading, data, error} = useQuery(GET_CLIENTS);
 
-    if(loading) return <p>Loading...</p>;
+    if(loading) return <Spinner/>
     if(error) {
         console.log(error);
         return <p>Something went wrong</p>;
