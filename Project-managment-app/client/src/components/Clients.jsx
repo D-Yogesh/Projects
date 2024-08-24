@@ -1,10 +1,13 @@
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import {FaTrash} from 'react-icons/fa';
-import { GET_CLIENTS } from "../queries/clientQueries";
+import { DELETE_CLIENT, GET_CLIENTS } from "../queries/clientQueries";
 import Spinner from "./Spinner";
 
 export default function Clients () {
     const {loading, data, error} = useQuery(GET_CLIENTS);
+    const [deleteClient] = useMutation(DELETE_CLIENT, {
+        refetchQueries: [{query: GET_CLIENTS}]
+    })
 
     if(loading) return <Spinner/>
     if(error) {
@@ -27,7 +30,7 @@ export default function Clients () {
                     {
                         data.clients.map( client => {
                             return (
-                                <tr key={client.name}>
+                                <tr key={client.id}>
                                     <td>
                                         {client.name}
                                     </td>
@@ -38,7 +41,7 @@ export default function Clients () {
                                         {client.phone}
                                     </td>
                                     <td>
-                                        <button className="btn btn-danger btn-sm">
+                                        <button className="btn btn-danger btn-sm" onClick={() => {deleteClient({variables: {id: client.id}})}}>
                                             <FaTrash/>
                                         </button>
                                     </td>
