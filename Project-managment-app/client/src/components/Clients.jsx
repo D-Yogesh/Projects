@@ -6,7 +6,14 @@ import Spinner from "./Spinner";
 export default function Clients () {
     const {loading, data, error} = useQuery(GET_CLIENTS);
     const [deleteClient] = useMutation(DELETE_CLIENT, {
-        refetchQueries: [{query: GET_CLIENTS}]
+        // refetchQueries: [{query: GET_CLIENTS}]
+        update(cache, {data: {deleteClient}}) {
+            const {clients} = cache.readQuery({query: GET_CLIENTS});
+            cache.writeQuery({
+                query: GET_CLIENTS,
+                data: {clients: clients.filter(client => client.id !== deleteClient.id)}
+            })
+        }
     })
 
     if(loading) return <Spinner/>
