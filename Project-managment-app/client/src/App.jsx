@@ -1,3 +1,4 @@
+import AddClientModal from './components/AddClientModal';
 import Clients from './components/Clients'
 import Header from './components/Header'
 import {ApolloClient, ApolloProvider, InMemoryCache} from '@apollo/client'
@@ -8,6 +9,11 @@ const cache = new InMemoryCache({
       fields: {
         clients: {
           merge(previousData, newData){
+            return newData;
+          }
+        },
+        projects: {
+          merge(previousData, newData) {
             return newData;
           }
         }
@@ -26,7 +32,10 @@ const App = () => {
     <>
       <ApolloProvider client={client}>
         <Header/>
-        <Clients/>
+        <div className="container">
+          <AddClientModal/>
+          <Clients/>
+        </div>
       </ApolloProvider>
     </>
   )
