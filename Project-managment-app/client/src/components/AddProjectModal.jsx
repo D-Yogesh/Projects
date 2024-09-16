@@ -1,21 +1,46 @@
+import { useMutation, useQuery } from "@apollo/client";
 import { useState } from "react";
-import { FaList, FaProjectDiagram, FaRProject } from "react-icons/fa";
+import { FaList} from "react-icons/fa";
+import { GET_CLIENTS } from "../queries/clientQueries";
+import Spinner from "./Spinner";
+import { ADD_PROJECT, GET_PROJECTS } from "../queries/projectQueries";
 
 export default function AddProjectModal() {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
-    const [status, setStatus] = useState('new');
+    const [status, setStatus] = useState('NotStarted');
     const [clientId, setClientId] = useState();
+
+    const {loading, data, error} = useQuery(GET_CLIENTS)
+
+    const [addProject] = useMutation(ADD_PROJECT, {
+        variables: {name, description, status, clientId},
+        update(cache, {data: {addProject}}) {
+            const {projects} = cache.readQuery({query: GET_PROJECTS});
+
+            // console.log(projects, addProject)
+            cache.writeQuery({
+                query: GET_PROJECTS,
+                data: {projects: [...projects, addProject]}
+            })
+        }
+    })
 
     const onSubmitHandler = (e) => {
         e.preventDefault()
-        console.log(name, description, status, clientId);
+        
+        if(name === '' || description === '' || status=== '' || clientId === '') return alert('Please fill in all fields');
+
+        addProject(name, description, status, clientId)
 
         setName('')
         setDescription('')
         setStatus('new')
         setClientId('')
     }
+
+    if(loading) return <Spinner/>
+    if(error) return <p className="text-danger">Something went wrong</p>
 
     return (
         <>
@@ -68,14 +93,25 @@ export default function AddProjectModal() {
                     </div>
                     <div className="mb-3">
                         <label className="form-label">
-                            Phone
+                            Status
                         </label>
                         <select id="status" className="form-select"
                         value={status}
                         onChange={e => setStatus(e.target.value)}>
-                            <option value={'new'}>Not started</option>
-                            <option value={'progress'}>In Progress</option>
-                            <option value={'completed'}>Completed</option>
+                            <option value={'NotStarted'}>Not started</option>
+                            <option value={'InProgress'}>In Progress</option>
+                            <option value={'Completed'}>Completed</option>
+                        </select>
+                    </div>
+                    <div className="mb-3">
+                        <label className="form-label">
+                            Client
+                        </label>
+                        <select name="client" id="clientId" className="form-select" value={clientId} onChange={e => setClientId(e.target.value)}>
+                            <option value={""}>Select...</option>
+                            {data.clients.length && data.clients.map(client => (
+                                <option key={client.id} value={client.id}>{client.name}</option>
+                            ))}
                         </select>
                     </div>
                     <div className="modal-footer">
