@@ -44,4 +44,29 @@ const ADD_PROJECT = gql`
     }
 `
 
-export {GET_PROJECTS, GET_PROJECT, ADD_PROJECT};
+const DELETE_PROJECT = gql`
+    mutation deleteProject($id: ID!) {
+        deleteProject(id: $id){
+            id
+        }
+    }
+`
+
+const UDPATE_PROJECT = gql`
+    mutation updateProject($id: ID!, $name: String!, $description: String!, $status: ProjectStatus! ){
+        updateProject(id: $id, name: $name, description: $description, status: $status) {
+            id
+            name
+            description
+            status
+            client {
+                id
+                name
+                email
+                phone
+            }
+        }
+    }
+`
+
+export {GET_PROJECTS, GET_PROJECT, ADD_PROJECT, DELETE_PROJECT, UDPATE_PROJECT};
